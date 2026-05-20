@@ -79,5 +79,104 @@
     "forecasted_demand": 96,
     "trend": "stable",
     "period": "Next 30 days"
+  },
+  {
+    "id": "10",
+    "item_sku": "PCB-002",
+    "item_name": "Dual Layer PCB Assembly",
+    "current_demand": 280,
+    "forecasted_demand": 540,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "11",
+    "item_sku": "MCU-402",
+    "item_name": "32-bit ARM Microcontroller",
+    "current_demand": 600,
+    "forecasted_demand": 1100,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "12",
+    "item_sku": "TMP-201",
+    "item_name": "Temperature Sensor Module",
+    "current_demand": 120,
+    "forecasted_demand": 320,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "13",
+    "item_sku": "STP-303",
+    "item_name": "Stepper Motor NEMA 17",
+    "current_demand": 45,
+    "forecasted_demand": 120,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "14",
+    "item_sku": "PSU-503",
+    "item_name": "24V 3A Industrial Power Supply",
+    "current_demand": 90,
+    "forecasted_demand": 175,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "15",
+    "item_sku": "PRX-204",
+    "item_name": "Proximity Sensor",
+    "current_demand": 320,
+    "forecasted_demand": 510,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "16",
+    "item_sku": "SPR-602",
+    "item_name": "Compression Spring",
+    "current_demand": 800,
+    "forecasted_demand": 812,
+    "trend": "stable",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "17",
+    "item_sku": "PWM-404",
+    "item_name": "PWM Motor Controller",
+    "current_demand": 140,
+    "forecasted_demand": 240,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "18",
+    "item_sku": "ACC-206",
+    "item_name": "3-Axis Accelerometer",
+    "current_demand": 60,
+    "forecasted_demand": 95,
+    "trend": "increasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "19",
+    "item_sku": "LED-406",
+    "item_name": "LED Driver IC",
+    "current_demand": 220,
+    "forecasted_demand": 190,
+    "trend": "decreasing",
+    "period": "Next 30 days"
+  },
+  {
+    "id": "20",
+    "item_sku": "SRV-301",
+    "item_name": "Micro Servo Motor",
+    "current_demand": 70,
+    "forecasted_demand": 95,
+    "trend": "decreasing",
+    "period": "Next 30 days"
   }
 ]

@@ -27,6 +27,58 @@
         </div>
       </div>
 
+      <!-- Submitted Orders section — only rendered when there are restocking orders -->
+      <div v-if="submittedOrders.length > 0" class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submittedOrders') }} ({{ submittedOrders.length }})</h3>
+          <p class="card-description">{{ t('orders.submittedOrdersDescription') }}</p>
+        </div>
+        <div v-if="submittedOrdersError" class="error submitted-orders-error">{{ submittedOrdersError }}</div>
+        <div class="table-container">
+          <table class="orders-table submitted-orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+                <th class="col-date">{{ t('orders.submittedAt') }}</th>
+                <th class="col-items">{{ t('orders.table.items') }}</th>
+                <th class="col-value">{{ t('orders.table.totalValue') }}</th>
+                <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
+                <th class="col-lead-time">{{ t('orders.leadTime') }}</th>
+                <th class="col-status">{{ t('orders.table.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in submittedOrders" :key="order.id">
+                <td class="col-order-number"><strong>{{ order.order_number }}</strong></td>
+                <td class="col-date">{{ formatDate(order.submitted_at) }}</td>
+                <td class="col-items">
+                  <!-- Items dropdown — uses item.unit_cost (restocking schema), NOT item.unit_price -->
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.sku" class="item-entry">
+                        <span class="item-name">{{ translateProductName(item.name) }}</span>
+                        <span class="item-meta">{{ t('orders.quantity') }}: {{ item.quantity }} @ {{ currencySymbol }}{{ item.unit_cost }}</span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td class="col-value"><strong>{{ currencySymbol }}{{ order.total_value.toLocaleString() }}</strong></td>
+                <td class="col-date">{{ formatDate(order.expected_delivery) }}</td>
+                <td class="col-lead-time">
+                  <span class="badge info">{{ t('orders.leadTimeDays', { days: order.lead_time_days }) }}</span>
+                </td>
+                <td class="col-status">
+                  <span class="badge info">{{ order.status }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ t('orders.allOrders') }} ({{ orders.length }})</h3>
@@ -92,9 +144,16 @@ export default {
     const currencySymbol = computed(() => {
       return currentCurrency.value === 'JPY' ? '¥' : '$'
     })
+
+    // Customer orders state
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+
+    // Submitted (restocking) orders state — independent of customer orders
+    const submittedOrdersLoading = ref(false)
+    const submittedOrdersError = ref(null)
+    const submittedOrders = ref([])
 
     // Use shared filters
     const {
@@ -105,6 +164,7 @@ export default {
       getCurrentFilters
     } = useFilters()
 
+    // Fetches customer orders only — called on mount and on filter change
     const loadOrders = async () => {
       try {
         loading.value = true
@@ -124,7 +184,30 @@ export default {
       }
     }
 
-    // Watch for filter changes and reload data
+    // Fetches restocking orders only — not subject to filters, called once on mount
+    const loadSubmittedOrders = async () => {
+      try {
+        submittedOrdersLoading.value = true
+        submittedOrdersError.value = null
+        const fetched = await api.getRestockingOrders()
+
+        // Backend returns newest-first; preserve that sort order by submitted_at desc
+        submittedOrders.value = fetched.slice().sort((a, b) => {
+          const dateA = new Date(a.submitted_at)
+          const dateB = new Date(b.submitted_at)
+          // Validate both dates before comparing to avoid NaN ordering
+          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0
+          return dateB - dateA
+        })
+      } catch (err) {
+        submittedOrdersError.value = 'Failed to load submitted orders'
+        console.error('Failed to load restocking orders:', err)
+      } finally {
+        submittedOrdersLoading.value = false
+      }
+    }
+
+    // Filter changes only re-fetch customer orders — restocking orders are filter-independent
     watch([selectedPeriod, selectedLocation, selectedCategory, selectedStatus], () => {
       loadOrders()
     })
@@ -153,13 +236,19 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    // Fetch both in parallel on mount; each resolves independently
+    onMounted(() => {
+      Promise.all([loadOrders(), loadSubmittedOrders()])
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      submittedOrdersLoading,
+      submittedOrdersError,
+      submittedOrders,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -201,6 +290,23 @@ export default {
 
 .col-value {
   width: 120px;
+}
+
+/* Lead time column for submitted orders table */
+.col-lead-time {
+  width: 100px;
+}
+
+/* Description line beneath the submitted orders card title */
+.card-description {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* Inline error inside submitted orders section */
+.submitted-orders-error {
+  margin: 0 1.5rem 1rem;
 }
 
 /* Items details styling */

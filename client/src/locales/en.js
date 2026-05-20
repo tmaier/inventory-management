@@ -4,6 +4,7 @@ export default {
     overview: 'Overview',
     inventory: 'Inventory',
     orders: 'Orders',
+    restocking: 'Restocking',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
     companyName: 'Catalyst Components',
@@ -106,6 +107,11 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: 'Submitted Orders',
+    submittedOrdersDescription: 'Restocking orders awaiting delivery',
+    leadTime: 'Lead Time',
+    leadTimeDays: '{days} days',
+    submittedAt: 'Submitted',
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -127,6 +133,31 @@ export default {
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
     }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Set a budget and let demand forecasts guide your next replenishment order.',
+    budgetLabel: 'Available Budget',
+    budgetHint: 'Drag to adjust',
+    totalCost: 'Recommended Spend',
+    remaining: 'Remaining Budget',
+    itemsCount: 'Items',
+    table: {
+      sku: 'SKU',
+      name: 'Item',
+      trend: 'Trend',
+      quantity: 'Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total'
+    },
+    placeOrder: 'Place Order',
+    submitting: 'Submitting...',
+    success: 'Restocking order submitted. Redirecting to Orders…',
+    empty: 'No items can be restocked with this budget. Try increasing it.',
+    loading: 'Calculating recommendations…',
+    error: 'Could not load recommendations. Please try again.'
   },
 
   // Finance/Spending
